@@ -9,6 +9,7 @@ import {InputText} from 'primereact/inputtext';
 import React from 'react';
 import {AutoComplete} from "primereact/autocomplete";
 import {search} from "../api/service";
+
 function TripType({
                       selectedOneway,
                       selectedRoundtrip,
@@ -49,19 +50,30 @@ function TripType({
 }
 
 export function TripDate({departureDate, setDepartureDate, returnDate, setReturnDate}) {
+    let day, month, year = ""
+    if (departureDate !== null && departureDate !== undefined) {
+        year = departureDate.getFullYear();
+        month = departureDate.getMonth() + 1;
+        day = departureDate.getDate();
+    }
     return (
         <div className="grid mt-4">
             <Card className="col m-1">
                 <span className="app-text text-blue-500">Departure Date</span>
                 <div className="grid p-2 ">
-                    <span className="footer-text-header text-4xl">19</span>
+                   <span className="footer-text-header text-4xl">
+  {day ? day : '19'}
+</span>
                     <div className="col">
-                        <span className="app-text px-4">June 2023</span>
+                        <span className="app-text px-4">   {month && year ? `${month && year}` : 'June 2023'}</span>
                     </div>
 
                 </div>
 
-                <Calendar value={departureDate} onChange={(e) => setDepartureDate(e.value)}/>
+                <Calendar value={departureDate} onChange={(e) => {
+                    setDepartureDate(e.value);
+                    console.log("New departure date:", e.value);
+                }}/>
 
 
             </Card>
@@ -153,12 +165,13 @@ export function TripCategory({
 
     );
 }
-export function TripPlaces({ fromValue, setFromValue, toValue, setToValue }) {
+
+export function TripPlaces({fromValue, setFromValue, toValue, setToValue}) {
 
     return (
         <div className=" flex-wrap shadow-4 border-round-md bg-white mt-2 p-2">
             <div>
-                <i className="pi pi-arrow-down px-2" style={{ color: "#cb538d" }}>
+                <i className="pi pi-arrow-down px-2" style={{color: "#cb538d"}}>
                     {" "}
                     From
                 </i>
@@ -166,10 +179,10 @@ export function TripPlaces({ fromValue, setFromValue, toValue, setToValue }) {
             </div>
             <Divider className="p-0 m-0" align="right">
                 {" "}
-                <Button  icon="pi pi-sort-alt" className="p-button-outlined"></Button>
+                <Button icon="pi pi-sort-alt" className="p-button-outlined"></Button>
             </Divider>
             <div>
-                <i className="pi pi-arrow-up px-3" style={{ color: "#cb538d" }}>
+                <i className="pi pi-arrow-up px-3" style={{color: "#cb538d"}}>
                     {" "}
                     To{" "}
                 </i>
@@ -254,6 +267,7 @@ export function HotelData({
         </div>
     );
 }
+
 export function CityOrHotel({cityOrHotelValue, setCityOrHotelValue}) {
     const [items, setItems] = useState([]);
     const search = (event) => {
@@ -273,6 +287,7 @@ export function CityOrHotel({cityOrHotelValue, setCityOrHotelValue}) {
     )
 
 }
+
 function FlightsSearch() {
     const [selectedCard, setSelectedCard] = useState('flight');
     const [departureDate, setDepartureDate] = useState(null);
@@ -346,6 +361,7 @@ function FlightsSearch() {
 
 
     );
+
     function prepareFlightObject(departureDate, returnDate, valueAdult, valueChild, valueInfant,selectedEcon, selectedBusiness, selectedClass,  selectedOneway, selectedRoundtrip, selectedMultiCity,fromValue,toValue) {
         const selectedTravels = [
             selectedEcon ? 'ECONOMY' : '',
@@ -360,8 +376,8 @@ function FlightsSearch() {
                     originLocationCode: fromValue,
                     destinationLocationCode: toValue,
                     departureDateTimeRange: {
-                        date: departureDate.toISOString().split("D")[1],
-                        time: departureDate.toISOString().split("T")[0],
+                        date: departureDate.toISOString().split("T")[0],
+                        time: departureDate.toISOString().substr(11,8),
                     },
                 },
                 {
@@ -369,8 +385,8 @@ function FlightsSearch() {
                     originLocationCode: fromValue,
                     destinationLocationCode: toValue,
                     departureDateTimeRange: {
-                        date: returnDate.toISOString().split("D")[1],
-                        time: returnDate.toISOString().split("T")[0],
+                        date: returnDate.toISOString().split("T")[0],
+                        time: returnDate.toISOString().substr(11,8),
                     },
                 },
             ],
@@ -394,36 +410,37 @@ function FlightsSearch() {
         };
 
 
-            flightObj.travelers.push({
-                id: `${valueAdult}`,
-                travelerType: "ADULT",
-                fareOptions: ["STANDARD"],
-            });
+        flightObj.travelers.push({
+            id: `${valueAdult}`,
+            travelerType: "ADULT",
+            // fareOptions: ["STANDARD"],
+        });
 
 
 
-            flightObj.travelers.push({
-                id: `${valueChild}`,
-                travelerType: "CHILD",
-                fareOptions: ["STANDARD"],
-            });
+        flightObj.travelers.push({
+            id: `${valueChild}`,
+            travelerType: "CHILD",
+            // fareOptions: ["STANDARD"],
+        });
 
 
-            flightObj.travelers.push({
-                id: `${valueInfant}`,
-                travelerType: "infants",
-                fareOptions: ["STANDARD"],
-            });
+        flightObj.travelers.push({
+            id: `${valueInfant}`,
+            travelerType: "SEATED_INFANT",
+            // fareOptions: ["STANDARD"],
+        });
 
         return flightObj;
     }
-    function searchFlightFun(departureDate, returnDate, valueAdult, valueChild, valueInfant,selectedEcon, selectedBusiness, selectedClass,  selectedOneway, selectedRoundtrip, selectedMultiCity,fromValue,toValue) {
-            debugger
+
+    function searchFlightFun(departureDate, returnDate, valueAdult, valueChild, valueInfant, selectedEcon, selectedBusiness, selectedClass, selectedOneway, selectedRoundtrip, selectedMultiCity, fromValue, toValue) {
+        debugger
 
 
-        const flightObj = prepareFlightObject(departureDate, returnDate, valueAdult, valueChild, valueInfant,selectedEcon, selectedBusiness, selectedClass,  selectedOneway, selectedRoundtrip, selectedMultiCity,fromValue,toValue);
-        console.log("gggg",flightObj.currencyCode)
-        search("v2/shopping/flight-offers",flightObj)
+        const flightObj = prepareFlightObject(departureDate, returnDate, valueAdult, valueChild, valueInfant, selectedEcon, selectedBusiness, selectedClass, selectedOneway, selectedRoundtrip, selectedMultiCity, fromValue, toValue);
+        console.log("gggg", flightObj.currencyCode)
+        search("v2/shopping/flight-offers", flightObj)
 
     }
 
@@ -431,10 +448,11 @@ function FlightsSearch() {
         debugger
         setFromValue(event.target.value);
     }
-    function handleInputToChange(event) {
-        debugger
-        setToValue(event.target.value);
-    }
+
+    // function handleInputToChange(event) {
+    //     debugger
+    //     setToValue(event.target.value);
+    // }
 
     return (
         <div>
@@ -467,27 +485,30 @@ function FlightsSearch() {
                                     {/*    <span className="app-text text-blue-500 pt-2">Date</span>*/}
 
                                     {/*</div>*/}
-                                    <div className="flex flex-wrap justify-content-center gap-3 border-round-md bg-white mt-4 shadow-4 ">
-                                        <div className="grid" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                            <span className="app-text text-blue-500 pt-2">From</span>
-                                            <div className="col" style={{ display: 'flex', alignItems: 'center' }}>
-                                                <InputText type="text" className="p-inputtext-sm w-3" placeholder="Small"   value={fromValue}
-                                                           onChange={handleInputFromChange} />
+                                    <div
+                                        className="flex flex-wrap justify-content-center gap-3 border-round-md bg-white mt-4 shadow-4 ">
+                                        <div className="flex items-center">
+                                            <div className="grid pt-3">
+                                                <span className="app-text text-blue-500  col">From</span>
+                                                <InputText type="text" className="w-3 px-4 col" placeholder="Small"
+                                                           value={fromValue} onChange={handleInputFromChange}/>
                                             </div>
                                         </div>
-                                        <Divider layout="vertical" className="px-4" />
-                                        <div className="grid" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                            <span className="app-text text-blue-500 pt-2">To</span>
-                                            <div className="col" style={{ display: 'flex', alignItems: 'center' }}>
-                                                <InputText type="text" className="p-inputtext-sm w-3" placeholder="Small"  value={toValue}
-                                                           onChange={handleInputToChange} />
+                                        <Divider className="p-0 m-0"/>
+                                        <div className="flex items-center">
+                                            <div className="grid">
+                                                <span className="app-text text-blue-500  col">To</span>
+                                                <InputText type="text" className="w-3 px-4 col" placeholder="Small"
+                                                           value={toValue} onChange={handleInputFromChange}/>
                                             </div>
                                         </div>
-                                        <Divider layout="vertical" className="px-4" />
-                                        <div className="grid" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                            <span className="app-text text-blue-500 pt-2">Date</span>
-                                            <div className="col" style={{ display: 'flex', alignItems: 'center' }}>
-                                                <InputText type="text" className="p-inputtext-sm w-3" placeholder="Small" />
+
+                                        <Divider className="p-0 m-0"/>
+                                        <div className="flex items-center">
+                                            <div className="grid pb-2">
+                                                <span className="app-text text-blue-500  col">Date</span>
+                                                <InputText type="text" className="w-3 px-4 col" placeholder="Small"
+                                                           value={fromValue} onChange={handleInputFromChange}/>
                                             </div>
                                         </div>
                                     </div>
@@ -498,10 +519,12 @@ function FlightsSearch() {
                                     className="w-8 px-3 m-3 imgB1"/>
                         </div>}
                         {(!multiCitySelected) && <div className="imgB1 w-8 px-2 ">
-                            <TripPlaces fromValue={fromValue} setFromValue={setFromValue} toValue={toValue} setToValue={setToValue}/>
+                            <TripPlaces fromValue={fromValue} setFromValue={setFromValue} toValue={toValue}
+                                        setToValue={setToValue}/>
                         </div>}
                         {(!multiCitySelected) && <div className="imgB1 w-8 px-2">
-                            <TripDate departureDate={departureDate} setDepartureDate={setDepartureDate} returnDate={returnDate}
+                            <TripDate departureDate={departureDate} setDepartureDate={setDepartureDate}
+                                      returnDate={returnDate}
                                       setReturnDate={setReturnDate}/>
                         </div>}
                         <div className="imgB1 w-8 px-2 ">
@@ -519,7 +542,7 @@ function FlightsSearch() {
                         </div>
 
                         <Button label="search" className='w-8 px-3 m-3 imgB1'
-                                onClick={() =>searchFlightFun(departureDate, returnDate, valueAdult, valueChild, valueInfant, selectedEcon, selectedBusiness, selectedClass, selectedOneway, selectedRoundtrip, selectedMultiCity, fromValue, toValue)}/>
+                                onClick={() => searchFlightFun(departureDate, returnDate, valueAdult, valueChild, valueInfant, selectedEcon, selectedBusiness, selectedClass, selectedOneway, selectedRoundtrip, selectedMultiCity, fromValue, toValue)}/>
 
                         <Image src="/traveller.jpg" alt="jpg" style={{marginLeft: '1rem'}}
                                className="imgA1 travel-img"/>

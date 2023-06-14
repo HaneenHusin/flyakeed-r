@@ -74,20 +74,20 @@ export async function searchFlightOffers(departureDate, returnDate, numAdults, n
 
 
 
-function convertToKeyValue(obj) {
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (typeof value === "object") {
-      if (Array.isArray(value)) {
-        acc[key] = value.map(convertToKeyValue);
-      } else {
-        acc[key] = convertToKeyValue(value);
-      }
-    } else {
-      acc[key] = value;
-    }
-    return acc;
-  }, {});
-}
+// function convertToKeyValue(obj) {
+//   return Object.entries(obj).reduce((acc, [key, value]) => {
+//     if (typeof value === "object") {
+//       if (Array.isArray(value)) {
+//         acc[key] = value.map(convertToKeyValue);
+//       } else {
+//         acc[key] = convertToKeyValue(value);
+//       }
+//     } else {
+//       acc[key] = value;
+//     }
+//     return acc;
+//   }, {});
+// }
 
 export async function search(
     url,
@@ -102,7 +102,7 @@ export async function search(
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
     };
-    const response = await axios.post( `https://test.api.amadeus.com/${url}`,convertToKeyValue (params), {headers});
+    const response = await axios.post( `https://test.api.amadeus.com/${url}`, params, {headers});
 
     console.log("resssss", response.data);
   } catch (error) {
