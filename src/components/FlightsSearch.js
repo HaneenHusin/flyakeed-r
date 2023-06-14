@@ -50,11 +50,16 @@ function TripType({
 }
 
 export function TripDate({departureDate, setDepartureDate, returnDate, setReturnDate}) {
-    let day, month, year = ""
+    let day, month, year,rday, rmonth, ryear = ""
     if (departureDate !== null && departureDate !== undefined) {
         year = departureDate.getFullYear();
-        month = departureDate.getMonth() + 1;
+        month = departureDate.toLocaleString('default', { month: 'short' });
         day = departureDate.getDate();
+    }
+    if (returnDate !== null && returnDate !== undefined) {
+        ryear = returnDate.getFullYear();
+        rmonth = returnDate.toLocaleString('default', { month: 'short' });
+        rday = returnDate.getDate();
     }
     return (
         <div className="grid mt-4">
@@ -62,10 +67,10 @@ export function TripDate({departureDate, setDepartureDate, returnDate, setReturn
                 <span className="app-text text-blue-500">Departure Date</span>
                 <div className="grid p-2 ">
                    <span className="footer-text-header text-4xl">
-  {day ? day : '19'}
-</span>
+                            {day ? day : '19'}
+                         </span>
                     <div className="col">
-                        <span className="app-text px-4">   {month && year ? `${month && year}` : 'June 2023'}</span>
+                        <span className="app-text px-4">   {month ? `${month}` : 'Jun'} { year ? `${year}` : '2023'}</span>
                     </div>
 
                 </div>
@@ -80,9 +85,11 @@ export function TripDate({departureDate, setDepartureDate, returnDate, setReturn
             <Card className="col m-1 surface-ground">
                 <span className="app-text text-blue-500">Return Date</span>
                 <div className="grid p-2 ">
-                    <span className="footer-text-header text-4xl">19</span>
+                   <span className="footer-text-header text-4xl">
+                            {rday ? rday : '19'}
+                         </span>
                     <div className="col">
-                        <span className="app-text px-4">June 2023</span>
+                        <span className="app-text px-4">   {rmonth ? `${rmonth}` : 'Jun'} { ryear ? `${ryear}` : '2023'}</span>
                     </div>
 
                 </div>
