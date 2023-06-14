@@ -1,14 +1,14 @@
 import {Image} from 'primereact/image';
-import {useState,useEffect} from 'react';
+import {useState} from 'react';
 import {Card} from 'primereact/card';
 import {Calendar} from 'primereact/calendar';
 import {Button} from 'primereact/button';
 import {Divider} from 'primereact/divider';
 import {InputNumber} from 'primereact/inputnumber';
 import {InputText} from 'primereact/inputtext';
-import {AutoComplete} from "primereact/autocomplete";
-// import {searchFlightOffers} from "../api/service ";
 import React from 'react';
+import {AutoComplete} from "primereact/autocomplete";
+import {search} from "../api/service";
 function TripType({
                       selectedOneway,
                       selectedRoundtrip,
@@ -48,7 +48,7 @@ function TripType({
     );
 }
 
-export function TripDate({departuredate, setDepartureDate, returnDate, setReturnDate}) {
+export function TripDate({departureDate, setDepartureDate, returnDate, setReturnDate}) {
     return (
         <div className="grid mt-4">
             <Card className="col m-1">
@@ -61,7 +61,7 @@ export function TripDate({departuredate, setDepartureDate, returnDate, setReturn
 
                 </div>
 
-                <Calendar value={departuredate} onChange={(e) => setDepartureDate(e.value)}/>
+                <Calendar value={departureDate} onChange={(e) => setDepartureDate(e.value)}/>
 
 
             </Card>
@@ -113,6 +113,68 @@ export function TripData({valueAdult, setValueAdult, valueChild, setValueChild, 
                 </div>
             </div>
 
+        </div>
+    );
+}
+
+
+export function TripCategory({
+                                 selectedEcon,
+                                 setSelectedEcon,
+                                 selectedBusiness,
+                                 setSelectedBusiness,
+                                 selectedClass,
+                                 setSelectedClass
+                             }) {
+    return (
+
+        <div className="flex flex-wrap justify-content-center gap-3 border-round-md bg-white mt-4 shadow-4 ">
+            <Button label="Econ" text className={selectedEcon ? 'p-button-secondary bg-primary' : ''} onClick={() => {
+                setSelectedBusiness(false);
+                setSelectedClass(false);
+                setSelectedEcon(true);
+            }}/>
+            <Divider layout="vertical"/>
+            <Button label="Business" text className={selectedBusiness ? 'p-button-secondary bg-primary' : ''}
+                    onClick={() => {
+                        setSelectedBusiness(true);
+                        setSelectedClass(false);
+                        setSelectedEcon(false);
+                    }}/>
+            <Divider layout="vertical" className=""/>
+            <Button label="First Class" text className={selectedClass ? 'p-button-secondary bg-primary' : ''}
+                    onClick={() => {
+                        setSelectedBusiness(false);
+                        setSelectedClass(true);
+                        setSelectedEcon(false);
+                    }}/>
+        </div>
+
+
+    );
+}
+export function TripPlaces({ fromValue, setFromValue, toValue, setToValue }) {
+
+    return (
+        <div className=" flex-wrap shadow-4 border-round-md bg-white mt-2 p-2">
+            <div>
+                <i className="pi pi-arrow-down px-2" style={{ color: "#cb538d" }}>
+                    {" "}
+                    From
+                </i>
+                <InputText value={fromValue} onChange={(e) => setFromValue(e.target.value)}/>
+            </div>
+            <Divider className="p-0 m-0" align="right">
+                {" "}
+                <Button  icon="pi pi-sort-alt" className="p-button-outlined"></Button>
+            </Divider>
+            <div>
+                <i className="pi pi-arrow-up px-3" style={{ color: "#cb538d" }}>
+                    {" "}
+                    To{" "}
+                </i>
+                <InputText value={toValue} onChange={(e) => setToValue(e.target.value)}/>
+            </div>
         </div>
     );
 }
@@ -192,62 +254,6 @@ export function HotelData({
         </div>
     );
 }
-
-export function TripCategory({
-                                 selectedEcon,
-                                 setSelectedEcon,
-                                 selectedBusiness,
-                                 setSelectedBusiness,
-                                 selectedClass,
-                                 setSelectedClass
-                             }) {
-    return (
-
-        <div className="flex flex-wrap justify-content-center gap-3 border-round-md bg-white mt-4 shadow-4 ">
-            <Button label="Econ" text className={selectedEcon ? 'p-button-secondary bg-primary' : ''} onClick={() => {
-                setSelectedBusiness(false);
-                setSelectedClass(false);
-                setSelectedEcon(true);
-            }}/>
-            <Divider layout="vertical"/>
-            <Button label="Business" text className={selectedBusiness ? 'p-button-secondary bg-primary' : ''}
-                    onClick={() => {
-                        setSelectedBusiness(true);
-                        setSelectedClass(false);
-                        setSelectedEcon(false);
-                    }}/>
-            <Divider layout="vertical" className=""/>
-            <Button label="First Class" text className={selectedClass ? 'p-button-secondary bg-primary' : ''}
-                    onClick={() => {
-                        setSelectedBusiness(false);
-                        setSelectedClass(true);
-                        setSelectedEcon(false);
-                    }}/>
-        </div>
-
-
-    );
-}
-
-export function TripPlaces({fromValue, setFromValue, toValue, setToValue}) {
-    return (
-        <div className=" flex-wrap shadow-4 border-round-md bg-white mt-2 p-2">
-            <div>
-                <i className="pi pi-arrow-down px-2" style={{color: '#cb538d'}}> From</i>
-                <InputText value={fromValue} onChange={(e) => setFromValue(e.target.value)}/>
-            </div>
-            <Divider className="p-0 m-0" align="right"> <Button icon="pi pi-sort-alt"
-                                                                className="p-button-outlined"></Button></Divider>
-            <div>
-                <i className="pi pi-arrow-up px-3" style={{color: '#cb538d'}}> To </i>
-                <InputText value={toValue} onChange={(e) => setToValue(e.target.value)}/>
-            </div>
-        </div>
-    )
-
-
-}
-
 export function CityOrHotel({cityOrHotelValue, setCityOrHotelValue}) {
     const [items, setItems] = useState([]);
     const search = (event) => {
@@ -265,18 +271,17 @@ export function CityOrHotel({cityOrHotelValue, setCityOrHotelValue}) {
             </div>
         </div>
     )
-}
 
-function BookSection() {
+}
+function FlightsSearch() {
     const [selectedCard, setSelectedCard] = useState('flight');
-    // const [selectedCard2, setSelectedCard2] = useState('oneWay');
-    const [ddate, setDDate] = useState(null);
-    const [rdate, setRDate] = useState(null);
+    const [departureDate, setDepartureDate] = useState(null);
+    const [returnDate, setReturnDate] = useState(null);
     const [checkInDate, setCheckInDate] = useState(null);
     const [checkOutDate, setCheckOutDate] = useState(null);
-    const [valueAdult, setValueAdult] = useState(1);
-    const [valueChild, setValueChild] = useState(1);
-    const [valueInfant, setValueInfant] = useState(1);
+    const [valueAdult, setValueAdult] = useState(0);
+    const [valueChild, setValueChild] = useState(0);
+    const [valueInfant, setValueInfant] = useState(0);
     const [selectedEcon, setSelectedEcon] = useState(true);
     const [selectedBusiness, setSelectedBusiness] = useState(false);
     const [selectedClass, setSelectedClass] = useState(false);
@@ -291,6 +296,8 @@ function BookSection() {
     const [valueChildHotel, setValueChildHotel] = useState(1);
     const [valueAdultHotel, setValueAdultHotel] = useState(1);
     const [numCards, setNumCards] = useState(1);
+    const [fromValue, setFromValue] = useState('SYD');
+    const [toValue, setToValue] = useState('BKK');
 
     const addCard = () => {
         setNumCards(numCards + 1);
@@ -339,12 +346,96 @@ function BookSection() {
 
 
     );
-    useEffect(() => {
+    function prepareFlightObject(departureDate, returnDate, valueAdult, valueChild, valueInfant,selectedEcon, selectedBusiness, selectedClass,  selectedOneway, selectedRoundtrip, selectedMultiCity,fromValue,toValue) {
+        const selectedTravels = [
+            selectedEcon ? 'ECONOMY' : '',
+            selectedBusiness ? 'BUSINESS' : '',
+            selectedClass ? 'FIRST' : '',
+        ];
+        const flightObj = {
+            currencyCode: "USD",
+            originDestinations: [
+                {
+                    id: "1",
+                    originLocationCode: fromValue,
+                    destinationLocationCode: toValue,
+                    departureDateTimeRange: {
+                        date: departureDate.toISOString().split("D")[1],
+                        time: departureDate.toISOString().split("T")[0],
+                    },
+                },
+                {
+                    id: "2",
+                    originLocationCode: fromValue,
+                    destinationLocationCode: toValue,
+                    departureDateTimeRange: {
+                        date: returnDate.toISOString().split("D")[1],
+                        time: returnDate.toISOString().split("T")[0],
+                    },
+                },
+            ],
+            travelers: [],
+            sources: ["GDS"],
+            searchCriteria: {
+                maxFlightOffers: 2,
+                flightFilters: {
+                    cabinRestrictions: [
+                        {
+                            cabin: selectedTravels.filter(Boolean).join(', '),
+                            coverage: "MOST_SEGMENTS",
+                            originDestinationIds: ["1"],
+                        },
+                    ],
+                    carrierRestrictions: {
+                        excludedCarrierCodes: ["AA", "TP", "AZ"],
+                    },
+                },
+            },
+        };
+
+
+            flightObj.travelers.push({
+                id: `${valueAdult}`,
+                travelerType: "ADULT",
+                fareOptions: ["STANDARD"],
+            });
+
+
+
+            flightObj.travelers.push({
+                id: `${valueChild}`,
+                travelerType: "CHILD",
+                fareOptions: ["STANDARD"],
+            });
+
+
+            flightObj.travelers.push({
+                id: `${valueInfant}`,
+                travelerType: "infants",
+                fareOptions: ["STANDARD"],
+            });
+
+        return flightObj;
+    }
+    function searchFlightFun(departureDate, returnDate, valueAdult, valueChild, valueInfant,selectedEcon, selectedBusiness, selectedClass,  selectedOneway, selectedRoundtrip, selectedMultiCity,fromValue,toValue) {
+            debugger
+
+
+        const flightObj = prepareFlightObject(departureDate, returnDate, valueAdult, valueChild, valueInfant,selectedEcon, selectedBusiness, selectedClass,  selectedOneway, selectedRoundtrip, selectedMultiCity,fromValue,toValue);
+        console.log("gggg",flightObj.currencyCode)
+        search("v2/shopping/flight-offers",flightObj)
+
+    }
+
+    function handleInputFromChange(event) {
         debugger
+        setFromValue(event.target.value);
+    }
+    function handleInputToChange(event) {
+        debugger
+        setToValue(event.target.value);
+    }
 
-       // searchFlightOffers(ddate, rdate, valueAdult, valueChild, valueInfant, selectedEcon, selectedBusiness, selectedClass, selectedOneway, selectedRoundtrip, selectedMultiCity);
-
-    }, []);
     return (
         <div>
             {flightSelected &&
@@ -380,14 +471,16 @@ function BookSection() {
                                         <div className="grid" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                             <span className="app-text text-blue-500 pt-2">From</span>
                                             <div className="col" style={{ display: 'flex', alignItems: 'center' }}>
-                                                <InputText type="text" className="p-inputtext-sm w-3" placeholder="Small" />
+                                                <InputText type="text" className="p-inputtext-sm w-3" placeholder="Small"   value={fromValue}
+                                                           onChange={handleInputFromChange} />
                                             </div>
                                         </div>
                                         <Divider layout="vertical" className="px-4" />
                                         <div className="grid" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                             <span className="app-text text-blue-500 pt-2">To</span>
                                             <div className="col" style={{ display: 'flex', alignItems: 'center' }}>
-                                                <InputText type="text" className="p-inputtext-sm w-3" placeholder="Small" />
+                                                <InputText type="text" className="p-inputtext-sm w-3" placeholder="Small"  value={toValue}
+                                                           onChange={handleInputToChange} />
                                             </div>
                                         </div>
                                         <Divider layout="vertical" className="px-4" />
@@ -405,11 +498,11 @@ function BookSection() {
                                     className="w-8 px-3 m-3 imgB1"/>
                         </div>}
                         {(!multiCitySelected) && <div className="imgB1 w-8 px-2 ">
-                            <TripPlaces/>
+                            <TripPlaces fromValue={fromValue} setFromValue={setFromValue} toValue={toValue} setToValue={setToValue}/>
                         </div>}
                         {(!multiCitySelected) && <div className="imgB1 w-8 px-2">
-                            <TripDate departuredate={ddate} setDepartureDate={setDDate} returnDate={rdate}
-                                      setReturnDate={setRDate}/>
+                            <TripDate departureDate={departureDate} setDepartureDate={setDepartureDate} returnDate={returnDate}
+                                      setReturnDate={setReturnDate}/>
                         </div>}
                         <div className="imgB1 w-8 px-2 ">
                             <TripData valueAdult={valueAdult}
@@ -425,7 +518,8 @@ function BookSection() {
                                           selectedClass={selectedClass} setSelectedClass={setSelectedClass}/>
                         </div>
 
-                        <Button label="search" className='w-8 px-3 m-3 imgB1'/>
+                        <Button label="search" className='w-8 px-3 m-3 imgB1'
+                                onClick={() =>searchFlightFun(departureDate, returnDate, valueAdult, valueChild, valueInfant, selectedEcon, selectedBusiness, selectedClass, selectedOneway, selectedRoundtrip, selectedMultiCity, fromValue, toValue)}/>
 
                         <Image src="/traveller.jpg" alt="jpg" style={{marginLeft: '1rem'}}
                                className="imgA1 travel-img"/>
@@ -466,4 +560,4 @@ function BookSection() {
     );
 }
 
-export default BookSection;
+export default FlightsSearch;

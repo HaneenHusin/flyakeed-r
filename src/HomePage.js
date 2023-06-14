@@ -2,13 +2,13 @@ import BookFlights from "./components/BookFlights";
 import Testimonials from "./components/Testimonials";
 import Companies from "./components/Companies";
 import TravelExperience from "./components/TravelExperience.js";
-import BookSection from "./components/BookSection";
+import FlightsSearch from "./components/FlightsSearch";
 import React from 'react';
 
 function HomePage() {
     return (
         <div>
-            <BookSection />
+            <FlightsSearch />
             <TravelExperience />
 
             <Companies />
