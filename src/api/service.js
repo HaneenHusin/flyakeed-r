@@ -112,3 +112,25 @@ export async function search(
 
 }
 
+export async function getSearch(
+    url,
+    params,
+) {
+  try {
+    debugger;
+    console.log(params);
+    const accessToken = await getToken();
+    console.log("accessToken",accessToken);
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': Bearer ${accessToken},
+    };
+    const response = await axios.get( `https://test.api.amadeus.com/${url}`+ params, {headers});
+
+    console.log("resssss", response.data);
+  } catch (error) {
+    console.error(error);
+  }
+
+
+}
