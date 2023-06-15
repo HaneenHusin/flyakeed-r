@@ -30,19 +30,7 @@ function Testimonials() {
                     <Image src="/blockquote.PNG" alt="payment" style={{color: '#2ecc71', fontSize: '2rem', marginRight: '10px'}}></Image>
 
                 </div>
-                {/*<div className="grid flex justify-content-between flex-wrap">*/}
-                {/*    <div className="col-12 md:col-6 lg:col-3">*/}
-                {/*        <Image src="/payment.PNG" alt="payment" width="150" height="60"></Image>*/}
-                {/*    </div>*/}
-                {/*    <div className="col-12 md:col-6 lg:col-3">*/}
-                {/*        <Image src="/payment.PNG" alt="payment" width="150" height="60"></Image>*/}
-                {/*    </div>*/}
-                {/*    <div className="col-12 md:col-6 lg:col-3">*/}
 
-                {/*        <Image src="/payment.PNG" alt="payment" width="150" height="60"></Image>*/}
-                {/*    </div>*/}
-
-                {/*</div>*/}
 
 
             </div>
